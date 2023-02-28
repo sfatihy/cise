@@ -222,66 +222,80 @@ class _AddPageState extends State<AddPage> {
                                         child: IconConstants.addIcon,
                                         onPressed: () {
                                           showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            //useSafeArea: true,
                                             context: context, builder: (context) {
-                                            return CustomModalBottomSheet(
-                                              widget: BlocProvider(
-                                                create: (context) => AddCubit(),
-                                                child: BlocBuilder<AddCubit, AddState>(
-                                                  builder: (context, state) {
-                                                    return Column(
-                                                      children: [
-                                                        Form(
-                                                          key: _tagFormKey,
-                                                          child: TextFormFieldContainer(
-                                                            child: TextFormField(
-                                                              decoration: const InputDecoration(
-                                                                  hintText: "Tag Name",
-                                                                  border: InputBorder.none
+                                            return GestureDetector(
+                                              behavior: HitTestBehavior.opaque,
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: GestureDetector(
+                                                onTap: () {
+
+                                                },
+                                                child: CustomModalBottomSheet(
+                                                  widget: BlocProvider(
+                                                    create: (context) => AddCubit(),
+                                                    child: BlocBuilder<AddCubit, AddState>(
+                                                      builder: (context, state) {
+                                                        return Column(
+                                                          children: [
+                                                            Form(
+                                                              key: _tagFormKey,
+                                                              child: TextFormFieldContainer(
+                                                                child: TextFormField(
+                                                                  decoration: const InputDecoration(
+                                                                      hintText: "Tag Name",
+                                                                      border: InputBorder.none
+                                                                  ),
+                                                                  minLines: 1,
+                                                                  maxLines: 1,
+                                                                  controller: context.read<AddCubit>().tagNameController,
+                                                                  validator: (value) {
+                                                                    if (value!.length < 2) {
+                                                                      return "Must be at least 2 characters";
+                                                                    }
+                                                                    else{
+                                                                      return null;
+                                                                    }
+                                                                  },
+                                                                ),
                                                               ),
-                                                              minLines: 1,
-                                                              maxLines: 1,
-                                                              controller: context.read<AddCubit>().tagNameController,
-                                                              validator: (value) {
-                                                                if (value!.length < 2) {
-                                                                  return "Must be at least 2 characters";
-                                                                }
-                                                                else{
-                                                                  return null;
-                                                                }
+                                                            ),
+                                                            const CustomHeightSpace(),
+                                                            SlidePicker(
+                                                              pickerColor: Theme.of(context).primaryColor,
+                                                              enableAlpha: false,
+                                                              onColorChanged: (Color c) {
+                                                                context.read<AddCubit>().changeColor(c);
                                                               },
                                                             ),
-                                                          ),
-                                                        ),
-                                                        const CustomHeightSpace(),
-                                                        SlidePicker(
-                                                          pickerColor: Theme.of(context).primaryColor,
-                                                          enableAlpha: false,
-                                                          onColorChanged: (Color c) {
-                                                            context.read<AddCubit>().changeColor(c);
-                                                          },
-                                                        ),
-                                                        const CustomHeightSpace(),
-                                                        OutlinedButton.icon(
-                                                          icon: IconConstants.addIcon,
-                                                          label: Text("Add Tag"),
-                                                          onPressed: () {
-                                                            if (_tagFormKey.currentState!.validate()) {
-                                                              Tag newTag = Tag(
-                                                                  tagName: context.read<AddCubit>().tagNameController.text,
-                                                                  tagCreatedDate: DateTime.now().microsecondsSinceEpoch.toString(),
-                                                                  tagColor: "0x${context.read<AddCubit>().colorController.value.toRadixString(16).toUpperCase()}"
-                                                              );
-                                                              context.read<AddCubit>().createTag(newTag);
-                                                              Navigator.pop(context);
-                                                            }
-                                                            else {
+                                                            const CustomHeightSpace(),
+                                                            OutlinedButton.icon(
+                                                              icon: IconConstants.addIcon,
+                                                              label: Text("Add Tag"),
+                                                              onPressed: () {
+                                                                if (_tagFormKey.currentState!.validate()) {
+                                                                  Tag newTag = Tag(
+                                                                      tagName: context.read<AddCubit>().tagNameController.text,
+                                                                      tagCreatedDate: DateTime.now().microsecondsSinceEpoch.toString(),
+                                                                      tagColor: "0x${context.read<AddCubit>().colorController.value.toRadixString(16).toUpperCase()}"
+                                                                  );
+                                                                  context.read<AddCubit>().createTag(newTag);
+                                                                  Navigator.pop(context);
+                                                                }
+                                                                else {
 
-                                                            }
-                                                          },
-                                                        )
-                                                      ],
-                                                    );
-                                                  },
+                                                                }
+                                                              },
+                                                            )
+                                                          ],
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             );
