@@ -8,10 +8,10 @@ enum LocaleKeys {
   onBoardingPage3("What is your \nforeign language ?"),
 
   // DRAWER
-  gameSpace("1. Game Space"),
-  collections("2. Collections"),
-  books("3. Books"),
-  weeklyReport("4. Weekly Report"),
+  gameSpace("Game Space"),
+  collections("Collections"),
+  books("Books"),
+  weeklyReport("Weekly Report"),
   settings("Settings"),
   info("Info"),
   privacyPolicy("Privacy Policy"),
@@ -27,6 +27,7 @@ enum LocaleKeys {
   deleteButton("Delete"),
   editButton("Edit"),
   memorizedButton("Memorized"),
+  notMemorizedButton("Not Memorized"),
   saveButton("Save"),
 
   // PROFILE PAGE

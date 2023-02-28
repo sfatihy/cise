@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cise/product/iconConstants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -57,18 +58,30 @@ class _CustomCardState extends State<CustomCard> {
             motion: const ScrollMotion(),
             extentRatio: 0.15,
             children: [
+              widget.data.isMemorized == 0 ?
               SlidableAction(
                 onPressed: (BuildContext context) {
-
                   if (widget.data.isMemorized! == 0) {
-                    context.read<CardCubit>().update(widget.data.id!);
+                    context.read<CardCubit>().update(widget.data.id!, 1);
                     context.read<CardCubit>().getDataFromDatabase(context.read<CardCubit>().filterTagId);
                   }
                 },
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 foregroundColor: ColorConstants.successColor,
                 icon: Icons.done_outlined,
-              ),
+              )
+              :
+              SlidableAction(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                foregroundColor: ColorConstants.warningColor,
+                icon: IconConstants.cancelIcon.icon,
+                onPressed: (BuildContext context) {
+                  if (widget.data.isMemorized! == 1) {
+                    context.read<CardCubit>().update(widget.data.id!, 0);
+                    context.read<CardCubit>().getDataFromDatabase(context.read<CardCubit>().filterTagId);
+                  }
+                }
+              )
             ],
           ),
           child: Card(
@@ -217,18 +230,30 @@ class _CustomCardState extends State<CustomCard> {
                                     });
                                   }
                               ),
+                              widget.data.isMemorized == 0 ?
                               MaterialButton(
                                   color: ColorConstants.infoColor,
                                   shape: const StadiumBorder(),
                                   child: Text(LocaleKeys.memorizedButton.value),
                                   onPressed: () {
-
                                     if (widget.data.isMemorized! == 0) {
-                                      context.read<CardCubit>().update(state.word.id!);
+                                      context.read<CardCubit>().update(state.word.id!, 1);
                                       Navigator.pop(context);
                                     }
                                   }
-                              ),
+                              )
+                              :
+                              MaterialButton(
+                                  color: ColorConstants.infoColor,
+                                  shape: const StadiumBorder(),
+                                  child: Text(LocaleKeys.notMemorizedButton.value, style: TextStyle(fontSize: 10),),
+                                  onPressed: () {
+                                    if (widget.data.isMemorized! == 1) {
+                                      context.read<CardCubit>().update(state.word.id!, 0);
+                                      Navigator.pop(context);
+                                    }
+                                  }
+                              )
                             ],
                           );
                         }

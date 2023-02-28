@@ -1,3 +1,4 @@
+import 'package:cise/view/weeklyReportPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cise/product/iconConstants.dart';
 import 'package:cise/product/imageConstants.dart';
@@ -74,10 +75,7 @@ class _HomePageState extends State<HomePage> {
               trailing: IconConstants.weeklyReport,
               title: Text(LocaleKeys.weeklyReport.value),
               onTap: () {
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                    CustomSnackBar(text: LocaleKeys.notAvailable.value)
-                );
+                Navigator.pushNamed(context, '/weekly');
               },
             ),
             Divider(),
@@ -85,14 +83,14 @@ class _HomePageState extends State<HomePage> {
               trailing: IconConstants.settingsIcon,
               title: Text(LocaleKeys.settings.value),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                Navigator.pushNamed(context, '/settings');
               },
             ),
             ListTile(
               trailing: IconConstants.infoIcon,
               title: Text(LocaleKeys.info.value),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => InfoPage()));
+                Navigator.pushNamed(context, '/info');
               },
             ),
             ListTile(
@@ -110,8 +108,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: IconConstants.floatingActionButtonIcon,
         onPressed: () {
-
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddPage()));
+          Navigator.pushNamed(context, '/add');
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

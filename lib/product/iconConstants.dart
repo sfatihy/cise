@@ -10,7 +10,7 @@ class IconConstants {
   static const Icon gamesIcon = Icon(Icons.games_outlined);
   static const Icon collectionsIcon = Icon(Icons.bookmarks_outlined);
   static const Icon booksIcon = Icon(Icons.book_outlined);
-  static const Icon weeklyReport = Icon(Icons.calendar_view_week);
+  static const Icon weeklyReport = Icon(Icons.scatter_plot_outlined,);
   static const Icon settingsIcon = Icon(Icons.settings_outlined);
   static const Icon infoIcon = Icon(Icons.info_outlined);
   static const Icon privacyPolicyIcon = Icon(Icons.privacy_tip_outlined);
@@ -28,4 +28,5 @@ class IconConstants {
   static const Icon compareArrowIcon = Icon(Icons.compare_arrows_outlined);
   static const Icon addIcon = Icon(Icons.add_circle_outline_sharp);
   static const Icon randomIcon = Icon(Icons.question_mark_outlined);
+  static const Icon cancelIcon = Icon(Icons.cancel_rounded);
 }

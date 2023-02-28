@@ -1,3 +1,5 @@
+import 'package:cise/view/infoPage.dart';
+import 'package:cise/view/weeklyReportPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,7 +63,9 @@ class MyApp extends StatelessWidget {
               '/add' : (context) => AddPage(),
               '/splash': (context) => SplashScreen(),
               '/onBoarding': (context) => OnBoardingBasePage(),
-              '/settings' : (context) => SettingsPage()
+              '/settings' : (context) => SettingsPage(),
+              '/info' : (context) => InfoPage(),
+              '/weekly' : (context) => WeeklyReportPage()
             },
             initialRoute: '/splash',
             //home: const SplashScreen(),

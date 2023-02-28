@@ -1,7 +1,7 @@
 import 'package:cise/database/tagDatabaseModel.dart';
 import 'package:cise/database/userDatabaseModel.dart';
 
-class ProfileState {
+abstract class ProfileState {
   const ProfileState();
 }
 

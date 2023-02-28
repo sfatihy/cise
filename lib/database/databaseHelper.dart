@@ -236,14 +236,14 @@ class DatabaseHelper {
     );
   }
 
-  Future updateWordMemorized(int id) async {
+  Future updateWordMemorized(int id, int data) async {
     final db = await instance.database;
 
     final now = DateTime.now().microsecondsSinceEpoch.toString();
 
     db.rawUpdate('''
     UPDATE $tableWord
-    SET ${WordDatabaseFields.isMemorized} = 1,
+    SET ${WordDatabaseFields.isMemorized} = $data,
     ${WordDatabaseFields.wordMemorizedDate} = $now
     WHERE ${WordDatabaseFields.id} = $id
     ''');

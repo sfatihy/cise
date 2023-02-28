@@ -1,3 +1,4 @@
+import 'package:cise/database/wordDatabaseModel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cise/database/databaseHelper.dart';
 import 'package:cise/database/tagDatabaseModel.dart';
@@ -65,8 +66,8 @@ class CardCubit extends Cubit<CardState> {
   }
 
   // UPDATE
-  Future update(int id) async {
-    await DatabaseHelper.instance.updateWordMemorized(id);
+  Future update(int id, int data) async {
+    await DatabaseHelper.instance.updateWordMemorized(id, data);
   }
 
   // CHANGE DATA
