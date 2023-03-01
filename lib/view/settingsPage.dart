@@ -57,7 +57,10 @@ class SettingsPage extends StatelessWidget {
                     icon: IconConstants.editIcon,
                     onPressed: () {
                       showModalBottomSheet(
-                        context: context, builder: (context) {
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        context: context,
+                        builder: (context) {
                           return CustomModalBottomSheet(
                             widget: BlocProvider(
                               create: (context) => ProfileCubit(),

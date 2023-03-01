@@ -46,6 +46,7 @@ enum LocaleKeys {
   addPageTitle("Word Add"),
   wordAdd("Add"),
   randomWordAdd("Add random word"),
+  sign("\u27AA")
   ;
 
   final value;

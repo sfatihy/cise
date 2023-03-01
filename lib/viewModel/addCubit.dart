@@ -1,3 +1,4 @@
+import 'package:cise/product/colorConstants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cise/database/databaseHelper.dart';
@@ -16,7 +17,7 @@ class AddCubit extends Cubit<AddState> {
 
   final WordService _wordService = WordService();
 
-  Color colorController = Color(0xFFFFFFFF);
+  Color colorController = ColorConstants.primaryColor;
 
   int tag = 0;
 
@@ -31,16 +32,17 @@ class AddCubit extends Cubit<AddState> {
         "destination": word.destination
       };
 
-      print(body);
+      //print(body);
 
       var response = await _wordService.postTranslation(body);
 
       word.wordTranslated = response["word"];
       word.sentenceTranslated = response["sentence"] ?? " ";
 
-      final result = await DatabaseHelper.instance.createWord(word);
+      Word result = await DatabaseHelper.instance.createWord(word);
 
-      print(result.toJson());
+      //print(result.toJson());
+      return result;
 
     }
     catch (e){
@@ -50,7 +52,14 @@ class AddCubit extends Cubit<AddState> {
 
   Future createTag(Tag tag) async {
 
-    final result = await DatabaseHelper.instance.createTag(tag);
+    try {
+      Tag result = await DatabaseHelper.instance.createTag(tag);
+
+      return result;
+    }
+    catch (e) {
+      print(e);
+    }
 
   }
 
@@ -78,9 +87,10 @@ class AddCubit extends Cubit<AddState> {
         tagId: tag
       );
 
-      final result = await DatabaseHelper.instance.createWord(word);
+      Word result = await DatabaseHelper.instance.createWord(word);
 
       print(result.toJson());
+      return result;
     }
     catch (e){
       print(e);
@@ -126,7 +136,7 @@ class AddCubit extends Cubit<AddState> {
 
   changeColor(Color c) {
     colorController = c;
-    print(colorController);
+    //print(colorController);
   }
 
   changeSourceValue(String value) {

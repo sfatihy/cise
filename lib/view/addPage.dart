@@ -1,3 +1,4 @@
+import 'package:cise/widget/CustomSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -224,78 +225,70 @@ class _AddPageState extends State<AddPage> {
                                           showModalBottomSheet(
                                             isScrollControlled: true,
                                             backgroundColor: Colors.transparent,
-                                            //useSafeArea: true,
                                             context: context, builder: (context) {
-                                            return GestureDetector(
-                                              behavior: HitTestBehavior.opaque,
-                                              onTap: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: GestureDetector(
-                                                onTap: () {
-
-                                                },
-                                                child: CustomModalBottomSheet(
-                                                  widget: BlocProvider(
-                                                    create: (context) => AddCubit(),
-                                                    child: BlocBuilder<AddCubit, AddState>(
-                                                      builder: (context, state) {
-                                                        return Column(
-                                                          children: [
-                                                            Form(
-                                                              key: _tagFormKey,
-                                                              child: TextFormFieldContainer(
-                                                                child: TextFormField(
-                                                                  decoration: const InputDecoration(
-                                                                      hintText: "Tag Name",
-                                                                      border: InputBorder.none
-                                                                  ),
-                                                                  minLines: 1,
-                                                                  maxLines: 1,
-                                                                  controller: context.read<AddCubit>().tagNameController,
-                                                                  validator: (value) {
-                                                                    if (value!.length < 2) {
-                                                                      return "Must be at least 2 characters";
-                                                                    }
-                                                                    else{
-                                                                      return null;
-                                                                    }
-                                                                  },
-                                                                ),
+                                            return CustomModalBottomSheet(
+                                              widget: BlocProvider(
+                                                create: (context) => AddCubit(),
+                                                child: BlocBuilder<AddCubit, AddState>(
+                                                  builder: (context, state) {
+                                                    return Column(
+                                                      children: [
+                                                        Form(
+                                                          key: _tagFormKey,
+                                                          child: TextFormFieldContainer(
+                                                            child: TextFormField(
+                                                              decoration: const InputDecoration(
+                                                                  hintText: "Tag Name",
+                                                                  border: InputBorder.none
                                                               ),
-                                                            ),
-                                                            const CustomHeightSpace(),
-                                                            SlidePicker(
-                                                              pickerColor: Theme.of(context).primaryColor,
-                                                              enableAlpha: false,
-                                                              onColorChanged: (Color c) {
-                                                                context.read<AddCubit>().changeColor(c);
+                                                              minLines: 1,
+                                                              maxLines: 1,
+                                                              controller: context.read<AddCubit>().tagNameController,
+                                                              validator: (value) {
+                                                                if (value!.length < 2) {
+                                                                  return "Must be at least 2 characters";
+                                                                }
+                                                                else{
+                                                                  return null;
+                                                                }
                                                               },
                                                             ),
-                                                            const CustomHeightSpace(),
-                                                            OutlinedButton.icon(
-                                                              icon: IconConstants.addIcon,
-                                                              label: Text("Add Tag"),
-                                                              onPressed: () {
-                                                                if (_tagFormKey.currentState!.validate()) {
-                                                                  Tag newTag = Tag(
-                                                                      tagName: context.read<AddCubit>().tagNameController.text,
-                                                                      tagCreatedDate: DateTime.now().microsecondsSinceEpoch.toString(),
-                                                                      tagColor: "0x${context.read<AddCubit>().colorController.value.toRadixString(16).toUpperCase()}"
-                                                                  );
-                                                                  context.read<AddCubit>().createTag(newTag);
-                                                                  Navigator.pop(context);
-                                                                }
-                                                                else {
+                                                          ),
+                                                        ),
+                                                        const CustomHeightSpace(),
+                                                        SlidePicker(
+                                                          pickerColor: Theme.of(context).colorScheme.primary,
+                                                          enableAlpha: false,
+                                                          onColorChanged: (Color c) {
+                                                            context.read<AddCubit>().changeColor(c);
+                                                          },
+                                                        ),
+                                                        const CustomHeightSpace(),
+                                                        OutlinedButton.icon(
+                                                          icon: IconConstants.addIcon,
+                                                          label: Text("Add Tag"),
+                                                          onPressed: () async {
+                                                            if (_tagFormKey.currentState!.validate()) {
+                                                              Tag newTag = Tag(
+                                                                  tagName: context.read<AddCubit>().tagNameController.text,
+                                                                  tagCreatedDate: DateTime.now().microsecondsSinceEpoch.toString(),
+                                                                  tagColor: "0x${context.read<AddCubit>().colorController.value.toRadixString(16).toUpperCase()}"
+                                                              );
+                                                              Tag result = await context.read<AddCubit>().createTag(newTag);
+                                                              Navigator.pop(context);
 
-                                                                }
-                                                              },
-                                                            )
-                                                          ],
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
+                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                  CustomSnackBar(text: result.tagName.toString() + " added!")
+                                                              );
+                                                            }
+                                                            else {
+
+                                                            }
+                                                          },
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
                                                 ),
                                               ),
                                             );
@@ -311,7 +304,7 @@ class _AddPageState extends State<AddPage> {
                             OutlinedButton.icon(
                               icon: IconConstants.addIcon,
                               label: Text(LocaleKeys.wordAdd.value),
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   Word newWord = Word(
                                     word: wordController.text,
@@ -328,7 +321,11 @@ class _AddPageState extends State<AddPage> {
 
                                   //print(newWord.toJson());
 
-                                  context.read<AddCubit>().createData(newWord);
+                                  Word result = await context.read<AddCubit>().createData(newWord);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      CustomSnackBar(text: result.word.toString() + " ${LocaleKeys.sign.value} " + result.wordTranslated.toString() + " added!")
+                                  );
                                 }
                                 else {
 
@@ -339,8 +336,13 @@ class _AddPageState extends State<AddPage> {
                             OutlinedButton.icon(
                                 icon: IconConstants.randomIcon,
                                 label: Text(LocaleKeys.randomWordAdd.value),
-                                onPressed: () {
-                                  context.read<AddCubit>().createRandomData();
+                                onPressed: () async {
+
+                                  Word result = await context.read<AddCubit>().createRandomData();
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      CustomSnackBar(text: result.word.toString() + " ${LocaleKeys.sign.value} " + result.wordTranslated.toString() + " added!")
+                                  );
                                 }
                             )
                           ],

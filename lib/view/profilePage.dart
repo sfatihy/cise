@@ -37,7 +37,7 @@ class ProfilePage extends StatelessWidget {
                     Spacer(),
                     Container(
                       padding: const EdgeInsets.all(16),
-                      child: Text("${state.user.motherLanguage} \u27AA ${state.user.foreignLanguage}", style: Theme.of(context).textTheme.titleMedium,)
+                      child: Text("${state.user.motherLanguage} ${LocaleKeys.sign.value} ${state.user.foreignLanguage}", style: Theme.of(context).textTheme.titleMedium,)
                     ),
                   ],
                 ),
