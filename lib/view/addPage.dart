@@ -143,6 +143,7 @@ class _AddPageState extends State<AddPage> {
                                       hintText: "word",
                                       border: InputBorder.none,
                                     ),
+                                    cursorColor: Theme.of(context).colorScheme.error,
                                     minLines: 1,
                                     maxLines: 1,
                                     controller: wordController,
@@ -162,6 +163,7 @@ class _AddPageState extends State<AddPage> {
                                       hintText: "sentence",
                                       border: InputBorder.none
                                     ),
+                                    cursorColor: Theme.of(context).colorScheme.error,
                                     minLines: 3,
                                     maxLines: 5,
                                     maxLength: 200,

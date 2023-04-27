@@ -180,4 +180,13 @@ ThemeData themeDark = ThemeData.dark().copyWith(
       ),
     ),
   ),
+  inputDecorationTheme: InputDecorationTheme(
+    hintStyle: TextStyle(
+      color: ColorConstants.textWhiteColor
+    ),
+    counterStyle: TextStyle(
+      color: ColorConstants.textWhiteColor
+    ),
+    border: InputBorder.none,
+  ),
 );

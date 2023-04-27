@@ -61,11 +61,16 @@ class _CardPageState extends State<CardPage> {
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: state.words.length,
-                    itemBuilder: (context, index) {
-                      return CustomCard(data: state.words[index]);
-                    }
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<CardCubit>().getDataFromDatabase(context.read<CardCubit>().filterTagId);
+                    },
+                    child: ListView.builder(
+                      itemCount: state.words.length,
+                      itemBuilder: (context, index) {
+                        return CustomCard(data: state.words[index]);
+                      }
+                    ),
                   )
                 )
               ],

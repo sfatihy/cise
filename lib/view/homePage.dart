@@ -1,13 +1,9 @@
-import 'package:cise/view/weeklyReportPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cise/product/iconConstants.dart';
 import 'package:cise/product/imageConstants.dart';
 import 'package:cise/product/localeKeys.dart';
-import 'package:cise/view/addPage.dart';
 import 'package:cise/view/cardPage.dart';
-import 'package:cise/view/infoPage.dart';
 import 'package:cise/view/profilePage.dart';
-import 'package:cise/view/settingsPage.dart';
 import 'package:cise/widget/CustomSnackBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -76,6 +72,13 @@ class _HomePageState extends State<HomePage> {
               title: Text(LocaleKeys.weeklyReport.value),
               onTap: () {
                 Navigator.pushNamed(context, '/weekly');
+              },
+            ),
+            ListTile(
+              trailing: IconConstants.randomIcon,
+              title: Text(LocaleKeys.randomWords.value),
+              onTap: () {
+                Navigator.pushNamed(context, '/random');
               },
             ),
             Divider(),

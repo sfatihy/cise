@@ -135,7 +135,7 @@ class _CustomCardState extends State<CustomCard> {
                   ]
               ),
               title: value < 0.5 ? Text(widget.data.word ?? "") : Text(widget.data.wordTranslated ?? ""),
-              subtitle: value < 0.5 ? Text(widget.data.sentence ?? "") : Text(widget.data.sentenceTranslated ?? ""),
+              subtitle: value < 0.5 ? getWordInSentence(widget.data.word, widget.data.sentence) : getWordInSentence(widget.data.wordTranslated, widget.data.sentenceTranslated),
               trailing: Column(
                 children: [
                   const Spacer(),
@@ -273,6 +273,67 @@ class _CustomCardState extends State<CustomCard> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+Widget getWordInSentence(String word, String sentence) {
+
+  if (sentence.isEmpty) {
+    return Text("");
+  }
+  else {
+    var result = sentence.split(' ');
+
+    //print(result);
+
+    int index = 0;
+
+    List<TextSpan> spans = [];
+
+    result.forEach((element) {
+      if (element.toLowerCase().contains(word.toLowerCase().trim())) {
+
+        if (element.characters.last.contains(RegExp(r'(\u002E)|,|!'))) {
+          String sc = element.characters.last;
+          element = element.substring(0,element.length-1);
+          //print(element);
+
+          spans.add(
+            TextSpan(
+              text: element,
+              style: TextStyle(color: ColorConstants.primaryColor)
+            )
+          );
+          spans.add(
+            TextSpan(
+              text: sc + " ",
+            )
+          );
+        }
+        else {
+          spans.add(
+            TextSpan(
+              text: element + " ",
+              style: TextStyle(color: ColorConstants.primaryColor)
+            )
+          );
+        }
+      }
+      else {
+        spans.add(
+          TextSpan(
+            text: element + " "
+          )
+        );
+      }
+      index++;
+    });
+
+    return RichText(
+      text: TextSpan(
+        children: spans
       ),
     );
   }

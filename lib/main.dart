@@ -1,4 +1,5 @@
 import 'package:cise/view/infoPage.dart';
+import 'package:cise/view/randomWordsPage.dart';
 import 'package:cise/view/weeklyReportPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,7 +66,8 @@ class MyApp extends StatelessWidget {
               '/onBoarding': (context) => OnBoardingBasePage(),
               '/settings' : (context) => SettingsPage(),
               '/info' : (context) => InfoPage(),
-              '/weekly' : (context) => WeeklyReportPage()
+              '/weekly' : (context) => WeeklyReportPage(),
+              '/random' : (context) => RandomWordsPage(),
             },
             initialRoute: '/splash',
             //home: const SplashScreen(),

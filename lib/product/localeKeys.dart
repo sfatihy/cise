@@ -12,6 +12,7 @@ enum LocaleKeys {
   collections("Collections"),
   books("Books"),
   weeklyReport("Weekly Report"),
+  randomWords("Random Words"),
   settings("Settings"),
   info("Info"),
   privacyPolicy("Privacy Policy"),
