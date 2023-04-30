@@ -1,3 +1,4 @@
+import 'package:cise/viewModel/addCubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cise/viewModel/cardCubit.dart';
@@ -40,7 +41,7 @@ class _CardPageState extends State<CardPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Chip(
-                        label: Text(state.tags[state.tags.length - context.read<CardCubit>().filterTagId -3].tagName.toString()),
+                        label: Text(state.tags[state.tag].tagName.toString()),
                         onDeleted: () {
                           context.read<CardCubit>().changeFilterTagId(0);
                         },

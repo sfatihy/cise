@@ -28,6 +28,7 @@ class AddPage extends StatefulWidget {
 class _AddPageState extends State<AddPage> {
   final _formKey = GlobalKey<FormState>();
   final _tagFormKey = GlobalKey<FormState>();
+  final updateTagFormKey = GlobalKey<FormState>();
 
   final wordController = TextEditingController();
   final sentenceController = TextEditingController();
@@ -212,8 +213,131 @@ class _AddPageState extends State<AddPage> {
                                             context.read<AddCubit>().changeTag(state.data[index].id ?? 0);
                                             context.read<AddCubit>().readData();
                                           },
-                                          onDoubleTap: () {
-                                            print("data");
+                                          onLongPress: () {
+                                            showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.transparent,
+                                              context: context,
+                                              builder: (context) {
+                                                Tag tag = state.data[index];
+                                                return CustomModalBottomSheet(
+                                                  widget: Column(
+                                                    children: [
+                                                      BlocProvider(
+                                                        create: (context) => AddCubit(),
+                                                        child: BlocBuilder<AddCubit, AddState>(
+                                                          builder: (context, state) {
+                                                            return Column(
+                                                              children: [
+                                                                Form(
+                                                                  key: updateTagFormKey,
+                                                                  child: TextFormFieldContainer(
+                                                                    child: TextFormField(
+                                                                      controller: context.read<AddCubit>().newTagNameController,
+                                                                      decoration: InputDecoration(
+                                                                        hintText: tag.tagName
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                CustomHeightSpace(),
+                                                                SlidePicker(
+                                                                  pickerColor: Color(int.parse(tag.tagColor ?? "0xFFFFFFFF")),
+                                                                  enableAlpha: false,
+                                                                  onColorChanged: (Color c) {
+                                                                    context.read<AddCubit>().changeColor(c);
+                                                                  },
+                                                                ),
+                                                                CustomHeightSpace(),
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                    ),
+                                                                    OutlinedButton.icon(
+                                                                      icon: IconConstants.saveIcon,
+                                                                      label: Text(LocaleKeys.updateTag.value),
+                                                                      onPressed: () async {
+                                                                        if (updateTagFormKey.currentState!.validate()) {
+
+                                                                          if (context.read<AddCubit>().newTagNameController.text.length > 0 || context.read<AddCubit>().colorController != ColorConstants.primaryColor) {
+                                                                            Tag updatedTag = Tag(
+                                                                                id: tag.id,
+                                                                                tagName: context.read<AddCubit>().newTagNameController.text.length > 0 ? context.read<AddCubit>().newTagNameController.text.toString() : tag.tagName,
+                                                                                tagCreatedDate: tag.tagCreatedDate,
+                                                                                tagColor: context.read<AddCubit>().colorController == ColorConstants.primaryColor ? tag.tagColor : "0x${context.read<AddCubit>().colorController.value.toRadixString(16).toUpperCase()}"
+                                                                            );
+
+                                                                            await context.read<AddCubit>().updateTag(updatedTag);
+
+                                                                            Navigator.pop(context);
+
+
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                                                CustomSnackBar(text: updatedTag.tagName.toString() + " changed!")
+                                                                            );
+                                                                          }
+                                                                          else {
+                                                                            print("Nothing changed!!!");
+                                                                          }
+                                                                        }
+                                                                        else {
+
+                                                                        }
+                                                                      },
+                                                                    ),
+                                                                    IconButton(
+                                                                      icon: IconConstants.deleteIcon,
+                                                                      tooltip: LocaleKeys.deleteTag.value,
+                                                                      onPressed: () {
+                                                                        var firstContext = context;
+                                                                        showDialog(
+                                                                            barrierDismissible: false,
+                                                                            context: firstContext,
+                                                                            builder: (firstContext) {
+                                                                              return AlertDialog(
+                                                                                title: Text(LocaleKeys.alertDelete.value),
+                                                                                content: Text(LocaleKeys.permissionDeleteTagContent.value + tag.tagName + " ?"),
+                                                                                actions: [
+                                                                                  MaterialButton(
+                                                                                    child: Text("Delete"),
+                                                                                    onPressed: () async {
+                                                                                      await context.read<AddCubit>().deleteTag(tag.id!);
+                                                                                      Navigator.pop(context);
+                                                                                      Navigator.pop(context);
+
+                                                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                                                          CustomSnackBar(text: tag.tagName.toString() + " deleted!")
+                                                                                      );
+                                                                                    },
+                                                                                  ),
+                                                                                  MaterialButton(
+                                                                                    child: Text("Don't"),
+                                                                                    onPressed: () {
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                  )
+                                                                                ],
+                                                                              );
+                                                                            }
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                            ).then((value) => {
+                                              context.read<AddCubit>().readData()
+                                            });
                                           },
                                         );
                                       },

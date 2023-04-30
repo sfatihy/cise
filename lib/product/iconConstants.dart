@@ -29,4 +29,5 @@ class IconConstants {
   static const Icon addIcon = Icon(Icons.add_circle_outline_sharp);
   static const Icon randomIcon = Icon(Icons.question_mark_outlined);
   static const Icon cancelIcon = Icon(Icons.cancel_rounded);
+  static const Icon deleteIcon = Icon(Icons.delete_outline);
 }

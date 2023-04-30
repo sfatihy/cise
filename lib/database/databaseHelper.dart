@@ -272,12 +272,29 @@ class DatabaseHelper {
   }
 
   // DELETE
-  Future delete(int id) async {
+  Future deleteWord(int id) async {
     final db = await instance.database;
 
     db.delete(
       tableWord,
       where: '${WordDatabaseFields.id} = ?',
+      whereArgs: [id]
+    );
+  }
+
+  Future deleteTag(int id) async {
+    final db = await instance.database;
+
+    db.rawUpdate('''
+      UPDATE $tableWord
+      SET ${WordDatabaseFields.tagId} = 0
+      WHERE ${WordDatabaseFields.tagId} = $id
+      '''
+    );
+
+    db.delete(
+      tableTag,
+      where: '${TagDatabaseFields.id} = ?',
       whereArgs: [id]
     );
   }

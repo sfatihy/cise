@@ -46,8 +46,16 @@ class CardCubit extends Cubit<CardState> {
         print("${element.id} -> ${element.tagName}");
       });*/
 
-      emit(CardsLoaded(result, tags, filterTagId));
-
+      int tagId = 0;
+      int index = 0;
+      for (index ; index < tags.length ; index++) {
+        //print("${index} -> ${tags[index].id} -> ${tags[index].tagName}");
+        if (tags[index].id == filterTagId) {
+          tagId = index;
+          break;
+        }
+      }
+      emit(CardsLoaded(result, tags, tagId));
     }
     catch (e) {
       emit(CardError(e.toString()));
@@ -58,7 +66,7 @@ class CardCubit extends Cubit<CardState> {
   Future deleteDataFromDatabase(int id) async {
 
     try {
-      await DatabaseHelper.instance.delete(id);
+      await DatabaseHelper.instance.deleteWord(id);
     }
     catch (e) {
       emit(CardError(e.toString()));

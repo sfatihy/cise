@@ -43,11 +43,17 @@ enum LocaleKeys {
   dark("Dark"),
   light("Light"),
 
+  // ALERT
+  alertDelete("Delete"),
+
   // ADD PAGE
   addPageTitle("Word Add"),
   wordAdd("Add"),
   randomWordAdd("Add random word"),
-  sign("\u27AA")
+  sign("\u27AA"),
+  updateTag("Change Tag"),
+  deleteTag("Delete Tag!"),
+  permissionDeleteTagContent("Are you sure you want to delete this tag: ")
   ;
 
   final value;

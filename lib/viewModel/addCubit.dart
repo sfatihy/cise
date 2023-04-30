@@ -14,6 +14,7 @@ class AddCubit extends Cubit<AddState> {
   String? destinationValue = "";
 
   TextEditingController tagNameController = TextEditingController();
+  TextEditingController newTagNameController = TextEditingController();
 
   final WordService _wordService = WordService();
 
@@ -114,6 +115,28 @@ class AddCubit extends Cubit<AddState> {
       }
 
       emit(AddLoaded(user.first ,allTag, tag));
+    }
+    catch (e) {
+      print(e);
+    }
+  }
+
+  // UPDATE
+  updateTag(Tag tag) async {
+    try {
+      Tag result = await DatabaseHelper.instance.updateTag(tag);
+
+      return result;
+    }
+    catch (e) {
+      print(e);
+    }
+  }
+
+  // DELETE
+  deleteTag(int id) async {
+    try {
+      await DatabaseHelper.instance.deleteTag(id);
     }
     catch (e) {
       print(e);
