@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:cise/model/RandomTranslateModel.dart';
+import 'package:cise/model/RandomTranslateResponseModel.dart';
+import 'package:cise/model/translateModel.dart';
+import 'package:cise/model/translateResponseModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -11,24 +15,21 @@ abstract class IWordService {
     'Accept' : 'application/json'
   };
 
-  Future postTranslation(Map body);
-  Future postRandomTranslation(Map body);
+  Future postTranslation(TranslateModel model);
+  Future postRandomTranslation(RandomTranslateModel model);
 }
 
 class WordService extends IWordService {
 
   @override
-  Future postTranslation(Map body) async{
+  Future postTranslation(TranslateModel model) async{
 
-    final response = await http.post(Uri.parse("$baseUrl/api/v1/translate"), body: jsonEncode(body), headers: headers());
+    final response = await http.post(Uri.parse("$baseUrl/api/v1/translate"), body: jsonEncode(model), headers: headers());
 
     switch (response.statusCode) {
       case HttpStatus.ok:
 
-        Map<dynamic, dynamic> jsonBody = jsonDecode(utf8.decode(response.bodyBytes));
-        //print(jsonBody.entries);
-
-        return jsonBody;
+        return TranslateResponseModel.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
 
       default:
         //throw NetworkError(response.statusCode.toString(), response.body);
@@ -36,15 +37,13 @@ class WordService extends IWordService {
   }
 
   @override
-  Future postRandomTranslation(Map body) async {
-    final response = await http.post(Uri.parse("$baseUrl/api/v1/random"), body: jsonEncode(body), headers: headers());
+  Future postRandomTranslation(RandomTranslateModel model) async {
+    final response = await http.post(Uri.parse("$baseUrl/api/v1/random"), body: jsonEncode(model), headers: headers());
 
     switch (response.statusCode) {
       case HttpStatus.ok:
 
-        Map<dynamic, dynamic> jsonBody = jsonDecode(utf8.decode(response.bodyBytes));
-
-        return jsonBody;
+        return RandomTranslateResponseModel.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
 
       default:
         //throw NetworkError(response.statusCode.toString(), response.body);

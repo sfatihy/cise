@@ -8,8 +8,10 @@ import 'package:cise/widget/CustomModalBottomSheet.dart';
 import 'package:cise/widget/CustomStateError.dart';
 import 'package:cise/widget/CustomStateInitial.dart';
 import 'package:cise/widget/CustomStateLoading.dart';
+import 'package:cise/widget/CustomTagRow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 
 class RandomWordsPage extends StatelessWidget {
   RandomWordsPage({Key? key}) : super(key: key);
@@ -38,6 +40,7 @@ class RandomWordsPage extends StatelessWidget {
                   return Stack(
                     children: [
                       PageView.builder(
+                        itemCount: context.read<RandomWordsCubit>().wordList.length,
                         controller: context.read<RandomWordsCubit>().pageController,
                         itemBuilder: (context, index) {
                           return Column(
@@ -59,6 +62,7 @@ class RandomWordsPage extends StatelessWidget {
                         onPageChanged: (int value) async {
                           await context.read<RandomWordsCubit>().changePage(value);
                         },
+                        scrollDirection: Axis.vertical,
                       ),
                       Align(
                         alignment: Alignment.topLeft,
@@ -168,6 +172,17 @@ class RandomWordsPage extends StatelessWidget {
                           onPressed: () {
                             context.read<RandomWordsCubit>().createWord();
                           },
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment(0,-0.5),
+                        child: AnimatedOpacity(
+                          opacity: context.read<RandomWordsCubit>().opacity,
+                          duration: Duration(milliseconds: 500),
+                          child: Visibility(
+                            visible: context.read<RandomWordsCubit>().visibility,
+                            child: IconConstants.swipeDownIcon),
+                          curve: Curves.ease,
                         ),
                       ),
                     ],

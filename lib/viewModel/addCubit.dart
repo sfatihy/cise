@@ -1,3 +1,7 @@
+import 'package:cise/model/RandomTranslateModel.dart';
+import 'package:cise/model/RandomTranslateResponseModel.dart';
+import 'package:cise/model/translateModel.dart';
+import 'package:cise/model/translateResponseModel.dart';
 import 'package:cise/product/colorConstants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,19 +30,19 @@ class AddCubit extends Cubit<AddState> {
   Future createData(Word word) async {
     try {
 
-      Map body = {
-        "word": word.word,
-        "sentence": word.sentence,
-        "source": word.source,
-        "destination": word.destination
-      };
+      TranslateModel model = TranslateModel(
+        word: word.word,
+        sentence: word.sentence,
+        source: word.source,
+        destination: word.destination
+      );
 
-      //print(body);
+      //print(model.toJson());
 
-      var response = await _wordService.postTranslation(body);
+      TranslateResponseModel response = await _wordService.postTranslation(model);
 
-      word.wordTranslated = response["word"];
-      word.sentenceTranslated = response["sentence"] ?? " ";
+      word.wordTranslated = response.word;
+      word.sentenceTranslated = response.sentence ?? " ";
 
       Word result = await DatabaseHelper.instance.createWord(word);
 
@@ -68,18 +72,18 @@ class AddCubit extends Cubit<AddState> {
 
     try {
 
-      Map body = {
-        "source": sourceValue,
-        "destination": destinationValue
-      };
+      RandomTranslateModel model = RandomTranslateModel(
+        source: sourceValue,
+        destination: destinationValue
+      );
 
-      var response = await _wordService.postRandomTranslation(body);
+      RandomTranslateResponseModel response = await _wordService.postRandomTranslation(model);
 
       Word word = Word(
-        word: response["wordSource"],
-        wordTranslated: response["wordDestination"],
-        sentence: response["sentenceSource"],
-        sentenceTranslated: response["sentenceDestination"],
+        word: response.wordSource,
+        wordTranslated: response.wordDestination,
+        sentence: response.sentenceSource,
+        sentenceTranslated: response.sentenceDestination,
         source: sourceValue,
         destination: destinationValue,
         wordAddedDate: DateTime.now().microsecondsSinceEpoch.toString(),

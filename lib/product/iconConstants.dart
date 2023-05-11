@@ -30,4 +30,5 @@ class IconConstants {
   static const Icon randomIcon = Icon(Icons.question_mark_outlined);
   static const Icon cancelIcon = Icon(Icons.cancel_rounded);
   static const Icon deleteIcon = Icon(Icons.delete_outline);
+  static const Icon swipeDownIcon = Icon(Icons.swipe_up_outlined, size: 64,);
 }

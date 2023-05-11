@@ -1,5 +1,7 @@
 import 'package:cise/database/databaseHelper.dart';
 import 'package:cise/database/wordDatabaseModel.dart';
+import 'package:cise/model/RandomTranslateModel.dart';
+import 'package:cise/model/RandomTranslateResponseModel.dart';
 import 'package:cise/service/WordService.dart';
 import 'package:cise/viewModel/randomWordsState.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,9 @@ class RandomWordsCubit extends Cubit<RandomWordsState> {
 
   List<Map> wordList =  [];
 
+  bool visibility = true;
+  double opacity = 1.0;
+
   Future<void> readAllData() async {
     try {
       emit(RandomWordsLoading());
@@ -30,6 +35,8 @@ class RandomWordsCubit extends Cubit<RandomWordsState> {
       if (destinationValue!.isEmpty) {
         destinationValue = user.first.foreignLanguage.toString();
       }
+
+      wordList.clear();
 
       for (int i = 0; i < 3; i++) {
         await loadData();
@@ -46,17 +53,17 @@ class RandomWordsCubit extends Cubit<RandomWordsState> {
   }
 
   Future loadData() async {
-    Map body = {
-      "source": sourceValue,
-      "destination": destinationValue
-    };
+    RandomTranslateModel model = RandomTranslateModel(
+      source: sourceValue,
+      destination: destinationValue
+    );
 
-    var response = await _wordService.postRandomTranslation(body);
+    RandomTranslateResponseModel response = await _wordService.postRandomTranslation(model);
 
     wordList.add(
       {
-        sourceValue!.toUpperCase() : response["wordSource"],
-        destinationValue!.toUpperCase() : response["wordDestination"]
+        sourceValue!.toUpperCase() : response.wordSource,
+        destinationValue!.toUpperCase() : response.wordDestination
       }
     );
   }
@@ -87,19 +94,30 @@ class RandomWordsCubit extends Cubit<RandomWordsState> {
     if (value == wordList.length - 2) {
       await loadData();
     }
+
+    opacity = 0;
+
+    if (page == 2) {
+      visibility = false;
+    }
+
+    emit(RandomWordsLoaded());
   }
 
   changeSourceValue(String value) {
     sourceValue = value;
+    readAllData();
   }
 
   changeDestinationValue(String value) {
     destinationValue = value;
+    readAllData();
   }
 
   changeSourceToDestination() {
     String? data = destinationValue;
     destinationValue = sourceValue;
     sourceValue = data;
+    readAllData();
   }
 }
