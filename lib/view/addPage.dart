@@ -1,18 +1,17 @@
+import 'package:cise/viewModel/tagsRowCubit.dart';
+import 'package:cise/viewModel/tagsRowState.dart';
 import 'package:cise/widget/CustomSnackBar.dart';
+import 'package:cise/widget/CustomTagsRow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:cise/database/tagDatabaseModel.dart';
 import 'package:cise/database/wordDatabaseModel.dart';
 import 'package:cise/product/appConstants.dart';
-import 'package:cise/product/colorConstants.dart';
 import 'package:cise/product/iconConstants.dart';
 import 'package:cise/product/localeKeys.dart';
 import 'package:cise/product/paddingConstants.dart';
 import 'package:cise/viewModel/addCubit.dart';
 import 'package:cise/viewModel/addState.dart';
 import 'package:cise/widget/CustomHeightSpace.dart';
-import 'package:cise/widget/CustomModalBottomSheet.dart';
 import 'package:cise/widget/CustomStateError.dart';
 import 'package:cise/widget/CustomStateInitial.dart';
 import 'package:cise/widget/CustomStateLoading.dart';
@@ -27,8 +26,6 @@ class AddPage extends StatefulWidget {
 
 class _AddPageState extends State<AddPage> {
   final _formKey = GlobalKey<FormState>();
-  final _tagFormKey = GlobalKey<FormState>();
-  final updateTagFormKey = GlobalKey<FormState>();
 
   final wordController = TextEditingController();
   final sentenceController = TextEditingController();
@@ -58,12 +55,18 @@ class _AddPageState extends State<AddPage> {
             ),
           ),
           body: SingleChildScrollView(
-            child: BlocProvider(
-              create: (context) => AddCubit(),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => AddCubit()..readData(),
+                ),
+                BlocProvider(
+                  create: (context) => TagsRowCubit()..setTags(),
+                )
+              ],
               child: BlocBuilder<AddCubit, AddState>(
                 builder: (context, state) {
                   if (state is AddInitial) {
-                    context.read<AddCubit>().readData();
                     return CustomStateInitial();
                   }
                   else if (state is AddLoading) {
@@ -175,304 +178,77 @@ class _AddPageState extends State<AddPage> {
                             ),
                           ),
                         ),
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 50,
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    padding: PaddingConstants.bodyLPadding,
-                                    child: ListView.builder(
-                                      itemCount: state.data.length - 1,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                          // Burası chip e çevrilebilir.
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Color(int.parse(state.data[index].tagColor ?? "0xFFFFFFFF")),
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(16),
-                                              border: Border.all(
-                                                color: state.tag == state.data[index].id ? Theme.of(context).colorScheme.primary : ColorConstants.backgroundDarkColor,
-                                                width: state.tag == state.data[index].id ? 2 : 0,
-                                                style: BorderStyle.solid
-                                              ),
-                                            ),
-                                            padding: PaddingConstants.allSmallPadding,
-                                            margin: index < state.data.length - 1 ? PaddingConstants.bodyRPadding : EdgeInsets.only(right: 48),
-                                            child: Center(
-                                              child: Text("#${state.data[index].tagName}",
-                                                style: Theme.of(context).textTheme.titleMedium,
-                                              )
-                                            ),
-                                          ),
-                                          onTap: () {
-                                            context.read<AddCubit>().changeTag(state.data[index].id ?? 0);
-                                            context.read<AddCubit>().readData();
-                                          },
-                                          onLongPress: () {
-                                            showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              backgroundColor: Colors.transparent,
-                                              context: context,
-                                              builder: (context) {
-                                                Tag tag = state.data[index];
-                                                return CustomModalBottomSheet(
-                                                  widget: Column(
-                                                    children: [
-                                                      BlocProvider(
-                                                        create: (context) => AddCubit(),
-                                                        child: BlocBuilder<AddCubit, AddState>(
-                                                          builder: (context, state) {
-                                                            return Column(
-                                                              children: [
-                                                                Form(
-                                                                  key: updateTagFormKey,
-                                                                  child: TextFormFieldContainer(
-                                                                    child: TextFormField(
-                                                                      controller: context.read<AddCubit>().newTagNameController,
-                                                                      decoration: InputDecoration(
-                                                                        hintText: tag.tagName
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                CustomHeightSpace(),
-                                                                SlidePicker(
-                                                                  pickerColor: Color(int.parse(tag.tagColor ?? "0xFFFFFFFF")),
-                                                                  enableAlpha: false,
-                                                                  onColorChanged: (Color c) {
-                                                                    context.read<AddCubit>().changeColor(c);
-                                                                  },
-                                                                ),
-                                                                CustomHeightSpace(),
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  children: [
-                                                                    SizedBox(
-                                                                      width: MediaQuery.of(context).size.width * 0.15,
-                                                                    ),
-                                                                    OutlinedButton.icon(
-                                                                      icon: IconConstants.saveIcon,
-                                                                      label: Text(LocaleKeys.updateTag.value),
-                                                                      onPressed: () async {
-                                                                        if (updateTagFormKey.currentState!.validate()) {
-
-                                                                          if (context.read<AddCubit>().newTagNameController.text.length > 0 || context.read<AddCubit>().colorController != ColorConstants.primaryColor) {
-                                                                            Tag updatedTag = Tag(
-                                                                                id: tag.id,
-                                                                                tagName: context.read<AddCubit>().newTagNameController.text.length > 0 ? context.read<AddCubit>().newTagNameController.text.toString() : tag.tagName,
-                                                                                tagCreatedDate: tag.tagCreatedDate,
-                                                                                tagColor: context.read<AddCubit>().colorController == ColorConstants.primaryColor ? tag.tagColor : "0x${context.read<AddCubit>().colorController.value.toRadixString(16).toUpperCase()}"
-                                                                            );
-
-                                                                            await context.read<AddCubit>().updateTag(updatedTag);
-
-                                                                            Navigator.pop(context);
-
-
-                                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                                                CustomSnackBar(text: updatedTag.tagName.toString() + " changed!")
-                                                                            );
-                                                                          }
-                                                                          else {
-                                                                            print("Nothing changed!!!");
-                                                                          }
-                                                                        }
-                                                                        else {
-
-                                                                        }
-                                                                      },
-                                                                    ),
-                                                                    IconButton(
-                                                                      icon: IconConstants.deleteIcon,
-                                                                      tooltip: LocaleKeys.deleteTag.value,
-                                                                      onPressed: () {
-                                                                        var firstContext = context;
-                                                                        showDialog(
-                                                                            barrierDismissible: false,
-                                                                            context: firstContext,
-                                                                            builder: (firstContext) {
-                                                                              return AlertDialog(
-                                                                                title: Text(LocaleKeys.alertDelete.value),
-                                                                                content: Text(LocaleKeys.permissionDeleteTagContent.value + tag.tagName + " ?"),
-                                                                                actions: [
-                                                                                  MaterialButton(
-                                                                                    child: Text("Delete"),
-                                                                                    onPressed: () async {
-                                                                                      await context.read<AddCubit>().deleteTag(tag.id!);
-                                                                                      Navigator.pop(context);
-                                                                                      Navigator.pop(context);
-
-                                                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                                                          CustomSnackBar(text: tag.tagName.toString() + " deleted!")
-                                                                                      );
-                                                                                    },
-                                                                                  ),
-                                                                                  MaterialButton(
-                                                                                    child: Text("Don't"),
-                                                                                    onPressed: () {
-                                                                                      Navigator.pop(context);
-                                                                                    },
-                                                                                  )
-                                                                                ],
-                                                                              );
-                                                                            }
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              }
-                                            ).then((value) => {
-                                              context.read<AddCubit>().readData()
-                                            });
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  Align(
-                                      alignment: Alignment.topRight,
-                                      child: FloatingActionButton.small(
-                                        child: IconConstants.addIcon,
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                            isScrollControlled: true,
-                                            backgroundColor: Colors.transparent,
-                                            context: context, builder: (context) {
-                                            return CustomModalBottomSheet(
-                                              widget: BlocProvider(
-                                                create: (context) => AddCubit(),
-                                                child: BlocBuilder<AddCubit, AddState>(
-                                                  builder: (context, state) {
-                                                    return Column(
-                                                      children: [
-                                                        Form(
-                                                          key: _tagFormKey,
-                                                          child: TextFormFieldContainer(
-                                                            child: TextFormField(
-                                                              decoration: const InputDecoration(
-                                                                  hintText: "Tag Name",
-                                                                  border: InputBorder.none
-                                                              ),
-                                                              minLines: 1,
-                                                              maxLines: 1,
-                                                              controller: context.read<AddCubit>().tagNameController,
-                                                              validator: (value) {
-                                                                if (value!.length < 2) {
-                                                                  return "Must be at least 2 characters";
-                                                                }
-                                                                else{
-                                                                  return null;
-                                                                }
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        const CustomHeightSpace(),
-                                                        SlidePicker(
-                                                          pickerColor: Theme.of(context).colorScheme.primary,
-                                                          enableAlpha: false,
-                                                          onColorChanged: (Color c) {
-                                                            context.read<AddCubit>().changeColor(c);
-                                                          },
-                                                        ),
-                                                        const CustomHeightSpace(),
-                                                        OutlinedButton.icon(
-                                                          icon: IconConstants.addIcon,
-                                                          label: Text("Add Tag"),
-                                                          onPressed: () async {
-                                                            if (_tagFormKey.currentState!.validate()) {
-                                                              Tag newTag = Tag(
-                                                                  tagName: context.read<AddCubit>().tagNameController.text,
-                                                                  tagCreatedDate: DateTime.now().microsecondsSinceEpoch.toString(),
-                                                                  tagColor: "0x${context.read<AddCubit>().colorController.value.toRadixString(16).toUpperCase()}"
-                                                              );
-                                                              Tag result = await context.read<AddCubit>().createTag(newTag);
-                                                              Navigator.pop(context);
-
-                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                  CustomSnackBar(text: result.tagName.toString() + " added!")
-                                                              );
-                                                            }
-                                                            else {
-
-                                                            }
-                                                          },
-                                                        )
-                                                      ],
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            );
-                                          }).then((value) => {
-                                              context.read<AddCubit>().readData()
-                                          });
-                                        },
-                                      )),
-                                ],
-                              ),
-                            ),
-                            const CustomHeightSpace(),
-                            OutlinedButton.icon(
-                              icon: IconConstants.addIcon,
-                              label: Text(LocaleKeys.wordAdd.value),
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  Word newWord = Word(
-                                    word: wordController.text,
-                                    wordTranslated: "",
-                                    sentence: sentenceController.text,
-                                    sentenceTranslated: "",
-                                    source: context.read<AddCubit>().sourceValue,
-                                    destination: context.read<AddCubit>().destinationValue,
-                                    wordAddedDate: DateTime.now().microsecondsSinceEpoch.toString(),
-                                    wordMemorizedDate: "",
-                                    isMemorized: 0,
-                                    tagId: state.tag
-                                  );
-
-                                  //print(newWord.toJson());
-
-                                  Word result = await context.read<AddCubit>().createData(newWord);
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      CustomSnackBar(text: result.word.toString() + " ${LocaleKeys.sign.value} " + result.wordTranslated.toString() + " added!")
-                                  );
-                                }
-                                else {
-
-                                }
-                              }
-                            ),
-                            const CustomHeightSpace(),
-                            OutlinedButton.icon(
-                                icon: IconConstants.randomIcon,
-                                label: Text(LocaleKeys.randomWordAdd.value),
-                                onPressed: () async {
-
-                                  Word result = await context.read<AddCubit>().createRandomData();
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      CustomSnackBar(text: result.word.toString() + " ${LocaleKeys.sign.value} " + result.wordTranslated.toString() + " added!")
-                                  );
-                                }
-                            )
-                          ],
+                        BlocBuilder<TagsRowCubit, TagsRowState>(
+                          builder: (context, state) {
+                            if (state is TagsRowInitial) {
+                              return CustomStateInitial();
+                            }
+                            else if (state is TagsRowLoading) {
+                              return CustomStateLoading();
+                            }
+                            else if (state is TagsRowLoaded) {
+                              return CustomTagsRow(
+                                tags: state.tags,
+                                currentTag: state.currentTagIndex,
+                                contextTagsRow: context,
+                              );
+                            }
+                            else {
+                              return CustomStateError(
+                                error: "Custom Tags Row Error",
+                                func: context.read<TagsRowCubit>().setTags()
+                              );
+                            }
+                          },
                         ),
+                        const CustomHeightSpace(),
+                        OutlinedButton.icon(
+                          icon: IconConstants.addIcon,
+                          label: Text(LocaleKeys.wordAdd.value),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<AddCubit>().setCurrentIndexFromTagsRowCubit(context.read<TagsRowCubit>().getCurrentTagIndex);
+
+                              Word newWord = Word(
+                                word: wordController.text,
+                                wordTranslated: "",
+                                sentence: sentenceController.text,
+                                sentenceTranslated: "",
+                                source: context.read<AddCubit>().sourceValue,
+                                destination: context.read<AddCubit>().destinationValue,
+                                wordAddedDate: DateTime.now().microsecondsSinceEpoch.toString(),
+                                wordMemorizedDate: "",
+                                isMemorized: 0,
+                                tagId: context.read<AddCubit>().currentTagIndex
+                              );
+
+                              //print(newWord.toJson());
+
+                              Word result = await context.read<AddCubit>().createData(newWord);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                CustomSnackBar(text: result.word.toString() + " ${LocaleKeys.sign.value} " + result.wordTranslated.toString() + " added!")
+                              );
+                            }
+                            else {
+
+                            }
+                          }
+                        ),
+                        const CustomHeightSpace(),
+                        OutlinedButton.icon(
+                          icon: IconConstants.randomIcon,
+                          label: Text(LocaleKeys.randomWordAdd.value),
+                          onPressed: () async {
+                            context.read<AddCubit>().setCurrentIndexFromTagsRowCubit(context.read<TagsRowCubit>().getCurrentTagIndex);
+
+                            Word result = await context.read<AddCubit>().createRandomData();
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              CustomSnackBar(text: result.word.toString() + " ${LocaleKeys.sign.value} " + result.wordTranslated.toString() + " added!")
+                            );
+                          }
+                        )
                       ],
                     );
                   }
@@ -485,7 +261,8 @@ class _AddPageState extends State<AddPage> {
                 },
               ),
             ),
-          )),
+          )
+      ),
     );
   }
 }

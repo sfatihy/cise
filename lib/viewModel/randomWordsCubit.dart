@@ -22,6 +22,7 @@ class RandomWordsCubit extends Cubit<RandomWordsState> {
 
   bool visibility = true;
   double opacity = 1.0;
+  int currentTagIndex = 0;
 
   Future<void> readAllData() async {
     try {
@@ -80,7 +81,7 @@ class RandomWordsCubit extends Cubit<RandomWordsState> {
         wordAddedDate: DateTime.now().microsecondsSinceEpoch.toString(),
         wordMemorizedDate: "",
         isMemorized: 0,
-        tagId: 0
+        tagId: currentTagIndex
     );
 
     Word result = await DatabaseHelper.instance.createWord(word);
@@ -119,5 +120,9 @@ class RandomWordsCubit extends Cubit<RandomWordsState> {
     destinationValue = sourceValue;
     sourceValue = data;
     readAllData();
+  }
+
+  setCurrentIndexFromTagsRowCubit(int index) {
+    currentTagIndex = index;
   }
 }

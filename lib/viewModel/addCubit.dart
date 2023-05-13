@@ -17,14 +17,9 @@ class AddCubit extends Cubit<AddState> {
   String? sourceValue = "";
   String? destinationValue = "";
 
-  TextEditingController tagNameController = TextEditingController();
-  TextEditingController newTagNameController = TextEditingController();
-
   final WordService _wordService = WordService();
 
-  Color colorController = ColorConstants.primaryColor;
-
-  int tag = 0;
+  int currentTagIndex = 0;
 
   // CREATE
   Future createData(Word word) async {
@@ -50,22 +45,9 @@ class AddCubit extends Cubit<AddState> {
       return result;
 
     }
-    catch (e){
-      print(e);
-    }
-  }
-
-  Future createTag(Tag tag) async {
-
-    try {
-      Tag result = await DatabaseHelper.instance.createTag(tag);
-
-      return result;
-    }
     catch (e) {
       print(e);
     }
-
   }
 
   Future createRandomData() async {
@@ -89,7 +71,7 @@ class AddCubit extends Cubit<AddState> {
         wordAddedDate: DateTime.now().microsecondsSinceEpoch.toString(),
         wordMemorizedDate: "",
         isMemorized: 0,
-        tagId: tag
+        tagId: currentTagIndex
       );
 
       Word result = await DatabaseHelper.instance.createWord(word);
@@ -118,29 +100,7 @@ class AddCubit extends Cubit<AddState> {
         destinationValue = user.first.foreignLanguage.toString();
       }
 
-      emit(AddLoaded(user.first ,allTag, tag));
-    }
-    catch (e) {
-      print(e);
-    }
-  }
-
-  // UPDATE
-  updateTag(Tag tag) async {
-    try {
-      Tag result = await DatabaseHelper.instance.updateTag(tag);
-
-      return result;
-    }
-    catch (e) {
-      print(e);
-    }
-  }
-
-  // DELETE
-  deleteTag(int id) async {
-    try {
-      await DatabaseHelper.instance.deleteTag(id);
+      emit(AddLoaded(user.first ,allTag, currentTagIndex));
     }
     catch (e) {
       print(e);
@@ -149,23 +109,6 @@ class AddCubit extends Cubit<AddState> {
 
 
   // CHANGE
-  changeTag(int id) {
-
-    print(id);
-
-    if (tag == id) {
-      tag = 0;
-    }
-    else {
-      tag = id;
-    }
-  }
-
-  changeColor(Color c) {
-    colorController = c;
-    //print(colorController);
-  }
-
   changeSourceValue(String value) {
     sourceValue = value;
   }
@@ -180,4 +123,7 @@ class AddCubit extends Cubit<AddState> {
     sourceValue = data;
   }
 
+  setCurrentIndexFromTagsRowCubit(int index) {
+    currentTagIndex = index;
+  }
 }
