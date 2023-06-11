@@ -7,10 +7,8 @@ class OnBoardingInitial extends OnBoardingState {}
 
 class OnBoardingLoading extends OnBoardingState {}
 
-class OnBoardingLoaded extends OnBoardingState {
-  final int tagId;
+class OnBoardingLoaded extends OnBoardingState {}
 
-  OnBoardingLoaded(this.tagId);
-}
+class OnBoardingRefresh extends OnBoardingState {}
 
 class OnBoardingError extends OnBoardingState {}

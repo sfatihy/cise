@@ -12,38 +12,14 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
 
   TextEditingController nameController = TextEditingController();
 
-  Future readData() async {
-    try {
-      emit(OnBoardingLoading());
-      final tags = await DatabaseHelper.instance.readAllTag();
-      print(tags.first.id);
-      emit(OnBoardingLoaded(tags.first.id ?? 10));
-    }
-    catch (e) {
-      print(e);
-      emit(OnBoardingError());
-    }
-  }
-
-  Future refresh() async {
-    try {
-      emit(OnBoardingLoading());
-      //final user = await DatabaseHelper.instance.readAllUser();
-      //print(user.first);
-      //emit(OnBoardingLoaded());
-    }
-    catch (e) {
-      print(e);
-      emit(OnBoardingError());
-    }
-  }
-
   changeMotherTongue(var value) {
     motherTongue = value as String?;
+    emit(OnBoardingRefresh());
   }
 
   changeForeignLanguage(String? value) {
     foreignLanguage = value;
+    emit(OnBoardingRefresh());
   }
 
   Future createUser(User user) async {

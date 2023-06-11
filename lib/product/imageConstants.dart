@@ -4,6 +4,15 @@ class ImageConstants {
   static const String logo = 'assets/logo.png';
   static const String logoName = 'assets/logoName.png';
 
+  static const List<String> mockups = [
+    'assets/mockups/Mockup - 1.png',
+    'assets/mockups/Mockup - 2.png',
+    'assets/mockups/Mockup - 3.png',
+    'assets/mockups/Mockup - 4.png',
+    'assets/mockups/Mockup - 5.png',
+    'assets/mockups/Mockup - 6.png',
+  ];
+
   // Network Image Urls
   static const rainLottie = 'https://assets1.lottiefiles.com/packages/lf20_h0cc4ii6.json';
 

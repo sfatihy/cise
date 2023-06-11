@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cise/product/colorConstants.dart';
 import 'package:cise/view/addPage.dart';
 import 'package:cise/view/homePage.dart';
-import 'package:cise/view/onBoardingPages/onBoardingBasePage.dart';
+import 'package:cise/view/onBoardingPage.dart';
 import 'package:cise/view/settingsPage.dart';
 import 'package:cise/view/splashScreen.dart';
 import 'package:cise/viewModel/settingsCubit.dart';
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
         if (state is SettingsInitial) {
           context.read<SettingsCubit>().chooseTheme();
           return MaterialApp(
-
+            debugShowCheckedModeBanner: false,
           );
         }
         else if (state is SettingsLoaded){
@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
               '/': (context) => HomePage(),
               '/add' : (context) => AddPage(),
               '/splash': (context) => SplashScreen(),
-              '/onBoarding': (context) => OnBoardingBasePage(),
+              '/onBoarding': (context) => OnBoardingPage(),
               '/settings' : (context) => SettingsPage(),
               '/info' : (context) => InfoPage(),
               '/weekly' : (context) => WeeklyReportPage(),

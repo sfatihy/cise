@@ -7,6 +7,23 @@ enum LocaleKeys {
   onBoardingPage2("What is your \nmother \ntongue/language ?"),
   onBoardingPage3("What is your \nforeign language ?"),
 
+  onBoardingPage([
+    "You can create words list.",
+    "You can add words.",
+    "You can create tags.",
+    "You can edit tag.",
+    "You can sort list.",
+    "You can see your profile."
+  ]),
+
+  onBoardingMotherLanguage("Mother Language"),
+  onBoardingForeignLanguage("Foreign Language"),
+
+  onBoardingSkipButton("Skip"),
+  onBoardingNextButton("Next"),
+  onBoardingDoneButton("Done"),
+  onBoardingCreateUserButton("Create User"),
+
   // DRAWER
   gameSpace("Game Space"),
   collections("Collections"),

@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 abstract class IWordService {
-  String baseUrl = "https://was6bk.deta.dev";
+  String baseUrl = "https://cise-1-o0089269.deta.app";
 
   headers() => {
     'Content-type' : 'application/json',
